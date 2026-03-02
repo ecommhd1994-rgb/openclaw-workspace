@@ -1,0 +1,40 @@
+# Sensitive config and keys
+.openclaw/openclaw.json
+.openclaw/openclaw.json.bak*
+.openclaw/*.token
+.openclaw/*.secret
+.openclaw/state/
+
+# Node modules and cache
+node_modules/
+.npm/
+.yarn/
+
+# Runtime state
+state/
+*.lock
+*.lock.*
+
+# Logs
+logs/
+*.log
+
+# Temporary files
+*.tmp
+*.temp
+.DS_Store
+
+# Backup files
+*.bak
+*.backup
+
+# ClawHub cache
+.clawhub/cache/
+
+# Test artifacts (optional - remove if you want to track)
+test-coding-module.js
+test-report.md
+
+# Memory files (optional - adjust based on preference)
+memory/*.md
+!memory/.gitkeep
