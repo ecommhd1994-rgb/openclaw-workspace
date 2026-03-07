@@ -20,7 +20,8 @@
 - User wants $20k/month income
 - User struggles with perfectionism
 - User prefers direct feedback
-- User uses GLM-4.7 model
+- User uses MiniMax-M2.5 model (current session)
+- User uses GLM-4.7-flash as default model
 - User wants to build a psychological product
 - User tracks token usage carefully
 
@@ -37,6 +38,15 @@
 
   Model: zai/glm-4.7-flash | Tokens: 1.2K → 0.3K | Cost: $0.001
   ```
+
+## 🚨 Consumption Alert Rule
+After EVERY prompt/response:
+- Check session status (`session_status` or read from tool result)
+- Alert Mohamad if:
+  - Input tokens > 5,000 for a simple query
+  - Input tokens growing significantly between turns (context bloat)
+  - Latency spikes > 30s alongside high token usage
+- Be proactive — don't wait for him to ask
 
 ## Todo
 - [ ] Run qmd embed (when GPU available or time permits)
@@ -57,6 +67,8 @@
 - Default model: glm-4.7-flash with low reasoning, 2k maxTokens
 - Cache retention: 24h
 - GLM-4.7/5: 0 input/output cost (free tier)
+- Token budget: 10k session, warning at 8k, alert at 9.5k
+- Current session: MiniMax-M2.5, 21k/200k ctx, 66% cached
 
 **Recommended (not yet applied):**
 - Reduce flash model maxTokens: 2000 → 1500

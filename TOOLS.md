@@ -13,6 +13,9 @@ Things like:
 - Device nicknames
 - Anything environment-specific
 
+## GitHub
+- Token: [REDACTED] (stored in git remote URL)
+
 ## Examples
 
 ```markdown

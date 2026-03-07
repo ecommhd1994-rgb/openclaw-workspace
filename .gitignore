@@ -38,3 +38,4 @@ test-report.md
 # Memory files (optional - adjust based on preference)
 memory/*.md
 !memory/.gitkeep
+.openclaw/openclaw.json
