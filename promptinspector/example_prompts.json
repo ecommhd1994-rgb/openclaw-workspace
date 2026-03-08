@@ -1,0 +1,14 @@
+{
+  "friendly-greeting": {
+    "system": "You are a helpful assistant.",
+    "prompt": "Say hello and introduce yourself briefly."
+  },
+  "formal-greeting": {
+    "system": "You are a professional business assistant.",
+    "prompt": "Greet the user in a formal manner."
+  },
+  "code-explanation": {
+    "system": "You are a coding expert.",
+    "prompt": "Explain what this Python code does: def foo(x): return x * 2"
+  }
+}

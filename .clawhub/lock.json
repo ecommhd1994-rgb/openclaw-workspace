@@ -12,6 +12,10 @@
     "openclaw-github-assistant": {
       "version": "2.0.1",
       "installedAt": 1772478856158
+    },
+    "self-improving-agent": {
+      "version": "1.0.11",
+      "installedAt": 1772936385958
     }
   }
 }

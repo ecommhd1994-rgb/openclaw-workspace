@@ -11,6 +11,8 @@
 - Prefers practical ROI over theory
 - Focused on token efficiency and cost savings
 - Running on server (Linux, no GPU)
+- **Token bloat incident (Mar 2026):** 2.7M input tokens from Mission Control Docker install = $0.80 charge
+- **Avoid:** Let Docker build logs fill context; use tail -20 for outputs; start fresh session for big projects
 
 ## Durable Facts
 - User prefers short responses
@@ -28,6 +30,7 @@
 ## Skills Installed
 - qmd: Local markdown search (BM25, needs embeddings for semantic)
 - dory-memory: Session continuity
+- self-improving-agent: Captures learnings, errors, corrections for continuous improvement
 
 ## Communication Preferences
 - Always include **Model** and **Token usage** on a separate line below every response
@@ -44,13 +47,15 @@ After EVERY prompt/response:
 - Check session status (`session_status` or read from tool result)
 - Alert Mohamad if:
   - Input tokens > 5,000 for a simple query
-  - Input tokens growing significantly between turns (context bloat)
-  - Latency spikes > 30s alongside high token usage
+  - Context growing significantly between turns (>10K increase)
+  - Total context > 50% — suggest session reset
 - Be proactive — don't wait for him to ask
+- **Critical:** If building Docker or running long commands, redirect output to file, don't let logs fill context
 
 ## Todo
 - [ ] Run qmd embed (when GPU available or time permits)
 - [ ] Index more note collections as needed
+- [ ] Debug: Mission Control frontend can't reach backend API (network_mode issue)
 
 ## Token & Model Display
 - Footer is at the bottom of each message
@@ -60,11 +65,11 @@ After EVERY prompt/response:
 ## OpenClaw Optimizations
 **Current (applied):**
 - Memory backend: qmd (BM25, no GPU needed)
-- Memory update interval: 5min
-- Memory limits: maxResults=3, maxSnippetChars=300, maxInjectedChars=1500
+- Memory update interval: 15min
+- Memory limits: maxResults=2, maxSnippetChars=200, maxInjectedChars=1000
 - DM scope: per-channel-peer (not all sessions)
 - Session maintenance: 30-day prune, 200 max entries, 10MB rotate, 14-day archive
-- Default model: glm-4.7-flash with low reasoning, 2k maxTokens
+- Default model: glm-4.7-flash with low reasoning, 1500 maxTokens
 - Cache retention: 24h
 - GLM-4.7/5: 0 input/output cost (free tier)
 - Token budget: 10k session, warning at 8k, alert at 9.5k
