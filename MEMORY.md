@@ -8,6 +8,7 @@
 - Vibe: Operator mindset — "figure it out, ship results"
 
 ## Lessons Learned
+- **Always backup before updates/config changes** — `openclaw backup create --verify`
 - Prefers practical ROI over theory
 - Focused on token efficiency and cost savings
 - Running on server (Linux, no GPU)
@@ -56,6 +57,16 @@ After EVERY prompt/response:
 - [ ] Run qmd embed (when GPU available or time permits)
 - [ ] Index more note collections as needed
 - [ ] Debug: Mission Control frontend can't reach backend API (network_mode issue)
+
+## Mission Control (Installed Mar 2026)
+- **Installed:** 2026-03-09
+- **Location:** /root/openclaw-mission-control
+- **Frontend:** http://localhost:3000
+- **Backend:** http://localhost:8000
+- **Auth Token:** cfb005a47e1d8994ea60ce551514fc21f2b73079f9a5930bebb863a2471d25bd
+- **Disk usage:** ~2.6GB (6GB images, 4GB cleaned)
+- **Status:** Running, NOT connected to OpenClaw gateway
+- **Port conflict:** Both OpenClaw and MC want port 3000
 
 ## Token & Model Display
 - Footer is at the bottom of each message

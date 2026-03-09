@@ -16,6 +16,14 @@
     "self-improving-agent": {
       "version": "1.0.11",
       "installedAt": 1772936385958
+    },
+    "supermemory": {
+      "version": "1.0.0",
+      "installedAt": 1773018404444
+    },
+    "session-logs": {
+      "version": "1.0.0",
+      "installedAt": 1773079539498
     }
   }
 }
