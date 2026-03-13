@@ -1,0 +1,8 @@
+{
+  "id": "main",
+  "name": "Main",
+  "description": "Primary assistant agent",
+  "model": "zai/glm-4.7-flash",
+  "workspace": "~/.openclaw/workspace",
+  "isDefault": true
+}

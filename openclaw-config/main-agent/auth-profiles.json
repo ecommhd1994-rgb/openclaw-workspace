@@ -1,0 +1,29 @@
+{
+  "version": 1,
+  "profiles": {
+    "minimax:default": {
+      "type": "api_key",
+      "provider": "minimax",
+      "key": "sk-cp-B6YVCJ-fPzYi16JxXT_gCb2lclNmB6tEQzHP_fjUnAXoHU0V2NFpJHNOIzOBWl2CY9bHrmj7QcdFfmDHX3_sQFO5EK4hVPQAQtr1Tcp-BFa4AWMPIRLtQPY"
+    },
+    "zai:default": {
+      "type": "api_key",
+      "provider": "zai",
+      "keyRef": {
+        "source": "env",
+        "provider": "default",
+        "id": "ZAI_API_KEY"
+      }
+    }
+  },
+  "usageStats": {
+    "minimax:default": {
+      "lastUsed": 1773425224237,
+      "errorCount": 0
+    },
+    "zai:default": {
+      "lastUsed": 1773083554785,
+      "errorCount": 0
+    }
+  }
+}

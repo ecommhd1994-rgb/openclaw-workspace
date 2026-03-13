@@ -1,0 +1,339 @@
+{
+  "meta": {
+    "lastTouchedVersion": "2026.3.8",
+    "lastTouchedAt": "2026-03-12T22:28:55.885Z"
+  },
+  "wizard": {
+    "lastRunAt": "2026-03-10T21:28:28.757Z",
+    "lastRunVersion": "2026.3.8",
+    "lastRunCommand": "doctor",
+    "lastRunMode": "local"
+  },
+  "update": {
+    "channel": "stable",
+    "auto": {
+      "enabled": true
+    }
+  },
+  "auth": {
+    "profiles": {
+      "minimax:default": {
+        "provider": "minimax",
+        "mode": "api_key"
+      },
+      "zai:default": {
+        "provider": "zai",
+        "mode": "api_key"
+      }
+    }
+  },
+  "models": {
+    "mode": "merge",
+    "providers": {
+      "minimax": {
+        "baseUrl": "https://api.minimax.io/anthropic",
+        "api": "anthropic-messages",
+        "authHeader": true,
+        "models": [
+          {
+            "id": "MiniMax-M2.5",
+            "name": "MiniMax M2.5",
+            "api": "anthropic-messages",
+            "reasoning": true,
+            "input": [
+              "text"
+            ],
+            "cost": {
+              "input": 0.3,
+              "output": 1.2,
+              "cacheRead": 0.03,
+              "cacheWrite": 0.12
+            },
+            "contextWindow": 200000,
+            "maxTokens": 8192
+          }
+        ]
+      },
+      "zai": {
+        "baseUrl": "https://api.z.ai/api/coding/paas/v4",
+        "api": "openai-completions",
+        "models": [
+          {
+            "id": "glm-5",
+            "name": "GLM-5",
+            "api": "openai-completions",
+            "reasoning": true,
+            "input": [
+              "text"
+            ],
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "contextWindow": 204800,
+            "maxTokens": 131072
+          },
+          {
+            "id": "glm-4.7",
+            "name": "GLM-4.7",
+            "api": "openai-completions",
+            "reasoning": true,
+            "input": [
+              "text"
+            ],
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "contextWindow": 204800,
+            "maxTokens": 131072
+          },
+          {
+            "id": "glm-4.7-flash",
+            "name": "GLM-4.7 Flash",
+            "api": "openai-completions",
+            "reasoning": true,
+            "input": [
+              "text"
+            ],
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "contextWindow": 204800,
+            "maxTokens": 131072
+          },
+          {
+            "id": "glm-4.7-flashx",
+            "name": "GLM-4.7 FlashX",
+            "api": "openai-completions",
+            "reasoning": true,
+            "input": [
+              "text"
+            ],
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "contextWindow": 204800,
+            "maxTokens": 131072
+          }
+        ]
+      }
+    }
+  },
+  "agents": {
+    "defaults": {
+      "model": {
+        "primary": "zai/glm-4.7-flash"
+      },
+      "models": {
+        "minimax/MiniMax-M2.5": {
+          "alias": "Minimax",
+          "params": {
+            "cacheRetention": "24h"
+          }
+        },
+        "zai/glm-4.7": {
+          "alias": "coding",
+          "params": {
+            "reasoning": "on",
+            "maxTokens": 8000,
+            "cacheRetention": "24h"
+          }
+        },
+        "zai/glm-4.7-flash": {
+          "alias": "daily",
+          "params": {
+            "reasoning": "low",
+            "maxTokens": 1500,
+            "cacheRetention": "6h"
+          }
+        }
+      },
+      "workspace": "/root/.openclaw/workspace",
+      "bootstrapMaxChars": 2000,
+      "bootstrapTotalMaxChars": 8000,
+      "compaction": {
+        "mode": "safeguard",
+        "reserveTokensFloor": 20000,
+        "memoryFlush": {
+          "enabled": true,
+          "softThresholdTokens": 32000,
+          "prompt": "Write a durable session note to memory/daily/YYYY-MM-DD.md. Capture only: decisions, architecture changes, debugging discoveries, open questions, and important constraints. If nothing important happened write NO_FLUSH.",
+          "systemPrompt": "Be concise. Use bullet points. Do not copy the conversation."
+        }
+      },
+      "maxConcurrent": 4,
+      "subagents": {
+        "maxConcurrent": 8
+      }
+    },
+    "list": [
+      {
+        "id": "main",
+        "name": "Jarvis",
+        "workspace": "/root/.openclaw/workspace",
+        "model": "zai/glm-4.7-flash"
+      }
+    ]
+  },
+  "tools": {
+    "exec": {
+      "host": "gateway",
+      "security": "full",
+      "ask": "off"
+    }
+  },
+  "commands": {
+    "native": "auto",
+    "nativeSkills": "auto",
+    "restart": true,
+    "ownerDisplay": "raw"
+  },
+  "session": {
+    "dmScope": "per-channel-peer",
+    "maintenance": {
+      "mode": "enforce",
+      "pruneAfter": "30d",
+      "maxEntries": 50,
+      "rotateBytes": "10mb",
+      "resetArchiveRetention": "14d"
+    }
+  },
+  "hooks": {
+    "internal": {
+      "enabled": true,
+      "entries": {
+        "session-memory": {
+          "enabled": true
+        },
+        "bootstrap-extra-files": {
+          "enabled": false,
+          "paths": [
+            "memory/*.md",
+            "MEMORY.md",
+            "projects/*.md",
+            "infrastructure/*.md",
+            "incidents/*.md"
+          ]
+        }
+      }
+    }
+  },
+  "channels": {
+    "defaults": {
+      "heartbeat": {
+        "showOk": false,
+        "showAlerts": true,
+        "useIndicator": true
+      }
+    },
+    "telegram": {
+      "enabled": true,
+      "dmPolicy": "pairing",
+      "botToken": "8515737784:AAGIv6N7xs4Wcm7r91xNHaNlNP_A7AFVmh0",
+      "groupPolicy": "allowlist",
+      "streaming": "off"
+    }
+  },
+  "gateway": {
+    "port": 18789,
+    "mode": "local",
+    "bind": "lan",
+    "controlUi": {
+      "allowedOrigins": [
+        "http://localhost:18789",
+        "http://127.0.0.1:18789"
+      ]
+    },
+    "auth": {
+      "mode": "token",
+      "token": "c3208c524c41a4cbf30048f769e6a7af23b0902f80e0336c"
+    },
+    "tailscale": {
+      "mode": "off",
+      "resetOnExit": false
+    },
+    "nodes": {
+      "denyCommands": [
+        "camera.snap",
+        "camera.clip",
+        "screen.record",
+        "calendar.add",
+        "contacts.add",
+        "reminders.add"
+      ]
+    }
+  },
+  "memory": {
+    "backend": "qmd",
+    "qmd": {
+      "searchMode": "search",
+      "includeDefaultMemory": true,
+      "paths": [
+        {
+          "path": "/root/.openclaw/workspace/memory",
+          "name": "memory",
+          "pattern": "*.md"
+        },
+        {
+          "path": "~/.openclaw/workspace/projects",
+          "name": "projects",
+          "pattern": "**/*.md"
+        },
+        {
+          "path": "~/.openclaw/workspace/infrastructure",
+          "name": "infrastructure",
+          "pattern": "**/*.md"
+        },
+        {
+          "path": "~/.openclaw/workspace/incidents",
+          "name": "incidents",
+          "pattern": "**/*.md"
+        }
+      ],
+      "update": {
+        "interval": "10m",
+        "onBoot": true
+      },
+      "limits": {
+        "maxResults": 1,
+        "maxSnippetChars": 150,
+        "maxInjectedChars": 800,
+        "timeoutMs": 60000
+      },
+      "scope": {
+        "default": "allow"
+      }
+    }
+  },
+  "skills": {
+    "entries": {
+      "dory-memory": {
+        "enabled": false
+      },
+      "self-improvement": {
+        "enabled": false
+      },
+      "supermemory": {
+        "enabled": false
+      }
+    }
+  },
+  "plugins": {
+    "entries": {
+      "telegram": {
+        "enabled": true
+      }
+    }
+  }
+}
