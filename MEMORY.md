@@ -15,7 +15,17 @@
 - **Token bloat incident (Mar 2026):** 2.7M input tokens from Mission Control Docker install = $0.80 charge
 - **Avoid:** Let Docker build logs fill context; use tail -20 for outputs; start fresh session for big projects
 
-## Durable Facts
+## Server Specs
+- **CPU:** AMD EPYC 9354P 32-Core (2 cores allocated)
+- **RAM:** 7.8GB total (~6.6GB available, ~4.6GB after loading 0.8b model)
+- **GPU:** None (CPU-only)
+
+## Local LLM (Ollama)
+- **Installed:** qwen3.5:0.8b
+- **API:** http://localhost:11434
+- **Use case:** Cron jobs, heartbeat tasks (save API tokens)
+- **Performance:** ~10 tokens/s, 28-57s per response
+- **RAM:** ~1GB used
 - User prefers short responses
 - User works from 9 to 6 as software engineer
 - User is building OpenClaw on VPS
