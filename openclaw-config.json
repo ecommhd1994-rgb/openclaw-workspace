@@ -1,15 +1,16 @@
 {
   "meta": {
-    "lastTouchedVersion": "2026.3.7",
-    "lastTouchedAt": "2026-03-08T21:19:00.000Z"
+    "lastTouchedVersion": "2026.3.13",
+    "lastTouchedAt": "2026-03-15T11:59:25.319Z"
   },
   "wizard": {
-    "lastRunAt": "2026-03-08T11:09:06.018Z",
-    "lastRunVersion": "2026.3.7",
+    "lastRunAt": "2026-03-13T18:52:09.883Z",
+    "lastRunVersion": "2026.3.12",
     "lastRunCommand": "doctor",
     "lastRunMode": "local"
   },
   "update": {
+    "channel": "stable",
     "auto": {
       "enabled": true
     }
@@ -22,6 +23,10 @@
       },
       "zai:default": {
         "provider": "zai",
+        "mode": "api_key"
+      },
+      "ollama:default": {
+        "provider": "ollama",
         "mode": "api_key"
       }
     }
@@ -37,6 +42,7 @@
           {
             "id": "MiniMax-M2.5",
             "name": "MiniMax M2.5",
+            "api": "anthropic-messages",
             "reasoning": true,
             "input": [
               "text"
@@ -59,6 +65,7 @@
           {
             "id": "glm-5",
             "name": "GLM-5",
+            "api": "openai-completions",
             "reasoning": true,
             "input": [
               "text"
@@ -75,6 +82,7 @@
           {
             "id": "glm-4.7",
             "name": "GLM-4.7",
+            "api": "openai-completions",
             "reasoning": true,
             "input": [
               "text"
@@ -91,6 +99,7 @@
           {
             "id": "glm-4.7-flash",
             "name": "GLM-4.7 Flash",
+            "api": "openai-completions",
             "reasoning": true,
             "input": [
               "text"
@@ -107,6 +116,7 @@
           {
             "id": "glm-4.7-flashx",
             "name": "GLM-4.7 FlashX",
+            "api": "openai-completions",
             "reasoning": true,
             "input": [
               "text"
@@ -121,13 +131,39 @@
             "maxTokens": 131072
           }
         ]
+      },
+      "ollama": {
+        "baseUrl": "http://127.0.0.1:11434",
+        "apiKey": "ollama-local",
+        "api": "ollama",
+        "models": [
+          {
+            "id": "qwen3.5:0.8b",
+            "name": "Qwen 3.5 0.8B",
+            "api": "ollama",
+            "input": [
+              "text"
+            ],
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "contextWindow": 32768,
+            "maxTokens": 4096
+          }
+        ]
       }
     }
   },
   "agents": {
     "defaults": {
       "model": {
-        "primary": "zai/glm-4.7-flash"
+        "primary": "minimax/MiniMax-M2.5",
+        "fallbacks": [
+          "zai/glm-4.7-flash"
+        ]
       },
       "models": {
         "minimax/MiniMax-M2.5": {
@@ -151,30 +187,79 @@
             "maxTokens": 1500,
             "cacheRetention": "6h"
           }
+        },
+        "ollama/qwen3.5:0.8b": {
+          "alias": "local",
+          "params": {
+            "maxTokens": 1024
+          }
         }
       },
       "workspace": "/root/.openclaw/workspace",
-      "bootstrapMaxChars": 8000,
-      "bootstrapTotalMaxChars": 40000,
+      "bootstrapMaxChars": 2000,
+      "bootstrapTotalMaxChars": 8000,
       "compaction": {
         "mode": "safeguard",
         "reserveTokensFloor": 20000,
         "memoryFlush": {
           "enabled": true,
-          "softThresholdTokens": 4000,
-          "prompt": "Write any lasting notes to memory/YYYY-MM-DD.md; reply with NO_REPLY if nothing to store.",
-          "systemPrompt": "Session nearing compaction. Store durable memories now."
+          "softThresholdTokens": 32000,
+          "prompt": "Write a durable session note to memory/daily/YYYY-MM-DD.md. Capture only: decisions, architecture changes, debugging discoveries, open questions, and important constraints. If nothing important happened write NO_FLUSH.",
+          "systemPrompt": "Be concise. Use bullet points. Do not copy the conversation."
         }
+      },
+      "heartbeat": {
+        "every": "30m",
+        "model": "ollama/qwen3.5:0.8b",
+        "includeReasoning": false,
+        "target": "none",
+        "lightContext": true
+      },
+      "maxConcurrent": 4,
+      "subagents": {
+        "maxConcurrent": 8
+      },
+      "sandbox": {
+        "mode": "non-main",
+        "workspaceAccess": "rw"
       }
     },
     "list": [
       {
         "id": "main",
         "name": "Jarvis",
+        "workspace": "/root/.openclaw/workspace",
         "model": "zai/glm-4.7-flash",
-        "workspace": "/root/.openclaw/workspace"
+        "subagents": {
+          "allowAgents": [
+            "researcher"
+          ]
+        }
+      },
+      {
+        "id": "local-ops",
+        "name": "Local Ops",
+        "workspace": "/root/.openclaw/workspace",
+        "model": "ollama/qwen3.5:0.8b"
+      },
+      {
+        "id": "researcher",
+        "name": "researcher",
+        "workspace": "/root/.openclaw/workspace-researcher",
+        "model": "minimax/MiniMax-M2.5"
       }
     ]
+  },
+  "tools": {
+    "deny": [
+      "group:web",
+      "browser"
+    ],
+    "exec": {
+      "host": "gateway",
+      "security": "full",
+      "ask": "off"
+    }
   },
   "commands": {
     "native": "auto",
@@ -200,6 +285,7 @@
           "enabled": true
         },
         "bootstrap-extra-files": {
+          "enabled": false,
           "paths": [
             "memory/*.md",
             "MEMORY.md",
@@ -212,10 +298,17 @@
     }
   },
   "channels": {
+    "defaults": {
+      "heartbeat": {
+        "showOk": false,
+        "showAlerts": true,
+        "useIndicator": true
+      }
+    },
     "telegram": {
       "enabled": true,
       "dmPolicy": "pairing",
-      "botToken": "8515737784:AAGIv6N7xs4Wcm7r91xNHaNlNP_A7AFVmh0",
+      "botToken": "***REDACTED***",
       "groupPolicy": "allowlist",
       "streaming": "off"
     }
@@ -223,10 +316,21 @@
   "gateway": {
     "port": 18789,
     "mode": "local",
-    "bind": "loopback",
+    "bind": "lan",
+    "controlUi": {
+      "allowedOrigins": [
+        "http://localhost:18789",
+        "http://127.0.0.1:18789"
+      ]
+    },
     "auth": {
       "mode": "token",
-      "token": "c3208c524c41a4cbf30048f769e6a7af23b0902f80e0336c"
+      "token": "***REDACTED***",
+      "rateLimit": {
+        "maxAttempts": 10,
+        "windowMs": 60000,
+        "lockoutMs": 300000
+      }
     },
     "tailscale": {
       "mode": "off",
@@ -250,6 +354,11 @@
       "includeDefaultMemory": true,
       "paths": [
         {
+          "path": "/root/.openclaw/workspace/memory",
+          "name": "memory",
+          "pattern": "*.md"
+        },
+        {
           "path": "~/.openclaw/workspace/projects",
           "name": "projects",
           "pattern": "**/*.md"
@@ -263,20 +372,48 @@
           "path": "~/.openclaw/workspace/incidents",
           "name": "incidents",
           "pattern": "**/*.md"
+        },
+        {
+          "path": "~/.openclaw/workspace-research/reports",
+          "name": "research-reports",
+          "pattern": "*.md"
+        },
+        {
+          "path": "~/.openclaw/workspace-research/sources",
+          "name": "research-sources",
+          "pattern": "**/*.md"
+        },
+        {
+          "path": "~/.openclaw/workspace-research/notes",
+          "name": "research-notes",
+          "pattern": "*.md"
         }
       ],
       "update": {
-        "interval": "5m",
+        "interval": "10m",
         "onBoot": true
       },
       "limits": {
-        "maxResults": 6,
-        "maxSnippetChars": 600,
-        "maxInjectedChars": 3000,
+        "maxResults": 2,
+        "maxSnippetChars": 300,
+        "maxInjectedChars": 1200,
         "timeoutMs": 60000
       },
       "scope": {
         "default": "allow"
+      }
+    }
+  },
+  "skills": {
+    "entries": {
+      "dory-memory": {
+        "enabled": false
+      },
+      "self-improvement": {
+        "enabled": false
+      },
+      "supermemory": {
+        "enabled": false
       }
     }
   },
