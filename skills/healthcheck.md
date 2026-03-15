@@ -1,0 +1,3 @@
+
+openclaw doctor --fix
+

@@ -11,13 +11,11 @@
 - **Always backup before updates/config changes** — `openclaw backup create --verify`
 - Prefers practical ROI over theory
 - Focused on token efficiency and cost savings
-- Running on server (Linux, no GPU)
-- **Token bloat incident (Mar 2026):** 2.7M input tokens from Mission Control Docker install = $0.80 charge
-- **Avoid:** Let Docker build logs fill context; use tail -20 for outputs; start fresh session for big projects
+- Avoid: Let Docker build logs fill context; use tail -20 for outputs; start fresh session for big projects
 
 ## Server Specs
 - **CPU:** AMD EPYC 9354P 32-Core (2 cores allocated)
-- **RAM:** 7.8GB total (~6.6GB available, ~4.6GB after loading 0.8b model)
+- **RAM:** 7.8GB total (~6.6GB available)
 - **GPU:** None (CPU-only)
 
 ## Local LLM (Ollama)
@@ -26,84 +24,34 @@
 - **Use case:** Cron jobs, heartbeat tasks (save API tokens)
 - **Performance:** ~10 tokens/s, 28-57s per response
 - **RAM:** ~1GB used
-- User prefers short responses
-- User works from 9 to 6 as software engineer
-- User is building OpenClaw on VPS
-- User has history of kidney stones
-- User wants $20k/month income
-- User struggles with perfectionism
-- User prefers direct feedback
-- User uses MiniMax-M2.5 model (current session)
-- User uses GLM-4.7-flash as default model
-- User wants to build a psychological product
-- User tracks token usage carefully
+
+## User Preferences
+- Prefers short, concise responses
+- Works from 9 to 6 as software engineer
+- Building OpenClaw on VPS
+- Has history of kidney stones
+- Wants $20k/month income
+- Struggles with perfectionism
+- Prefers direct feedback
+- Uses MiniMax-M2.5 model (current session)
+- Uses GLM-4.7-flash as default model
+- Wants to build a psychological product
+- Tracks token usage carefully
 
 ## Skills Installed
-- qmd: Local markdown search (BM25, needs embeddings for semantic)
+- qmd: Local markdown search (BM25)
 - dory-memory: Session continuity
-- self-improving-agent: Captures learnings, errors, corrections for continuous improvement
+- self-improving-agent: Captures learnings, errors, corrections
 
 ## Communication Preferences
 - Always include **Model** and **Token usage** on a separate line below every response
 - Format: `Model: <model> | Tokens: <input> → <output> | Cost: <cost>`
-- Example:
-  ```
-  Response text here...
-
-  Model: zai/glm-4.7-flash | Tokens: 1.2K → 0.3K | Cost: $0.001
-  ```
 
 ## 🚨 Consumption Alert Rule
 After EVERY prompt/response:
-- Check session status (`session_status` or read from tool result)
 - Alert Mohamad if:
   - Input tokens > 5,000 for a simple query
-  - Context growing significantly between turns (>10K increase)
+  - Context growing significantly between turns
   - Total context > 50% — suggest session reset
 - Be proactive — don't wait for him to ask
-- **Critical:** If building Docker or running long commands, redirect output to file, don't let logs fill context
-
-## Todo
-- [ ] Run qmd embed (when GPU available or time permits)
-- [ ] Index more note collections as needed
-- [ ] Debug: Mission Control frontend can't reach backend API (network_mode issue)
-
-## Mission Control (Installed Mar 2026)
-- **Installed:** 2026-03-09
-- **Location:** /root/openclaw-mission-control
-- **Frontend:** http://localhost:3000
-- **Backend:** http://localhost:8000
-- **Auth Token:** cfb005a47e1d8994ea60ce551514fc21f2b73079f9a5930bebb863a2471d25bd
-- **Disk usage:** ~2.6GB (6GB images, 4GB cleaned)
-- **Status:** Running, NOT connected to OpenClaw gateway
-- **Port conflict:** Both OpenClaw and MC want port 3000
-
-## Token & Model Display
-- Footer is at the bottom of each message
-- If you can't see it, let me know — I'll put it at the top
-- Shows actual usage for that specific response
-
-## OpenClaw Optimizations
-**Current (applied):**
-- Memory backend: qmd (BM25, no GPU needed)
-- Memory update interval: 15min
-- Memory limits: maxResults=2, maxSnippetChars=200, maxInjectedChars=1000
-- DM scope: per-channel-peer (not all sessions)
-- Session maintenance: 30-day prune, 200 max entries, 10MB rotate, 14-day archive
-- Default model: glm-4.7-flash with low reasoning, 1500 maxTokens
-- Cache retention: 24h
-- GLM-4.7/5: 0 input/output cost (free tier)
-- Token budget: 10k session, warning at 8k, alert at 9.5k
-- Current session: MiniMax-M2.5, 21k/200k ctx, 66% cached
-
-**Recommended (not yet applied):**
-- Reduce flash model maxTokens: 2000 → 1500
-- Tighten memory limits: maxSnippetChars 300 → 200, maxInjectedChars 1500 → 1200
-- Longer memory update interval: 5m → 10m
-- Reduce memory maxResults: 3 → 2
-
-**Agent behavior:**
-- Uses memory_search → memory_get (qmd BM25)
-- Short, concise responses
-- Always includes Model/token footer
-- Uses flash for daily, coding for complex work
+- If building Docker or running long commands, redirect output to file
